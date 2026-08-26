@@ -1,0 +1,208 @@
+/* DASHBOARD CONTAINER */
+.cbg-dashboard-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background-color: #2f3e46;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .logo {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.sidebar .logo p {
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: #cfd8dc;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  padding: 12px 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu li.active,
+.menu li:hover {
+  background-color: #4caf50;
+}
+
+/* MAIN AREA */
+.main {
+  flex: 1;
+  background-color: #f8f9fa;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.topbar h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.topbar p {
+  color: #555;
+  margin: 5px 0 20px 0;
+}
+
+/* STATS CARDS */
+.stats-cards {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.stat-card.submitted { background-color: #ff9800; }
+.stat-card.completed { background-color: #2196f3; }
+.stat-card.remaining { background-color: #4caf50; }
+
+/* REQUEST TABLE (refer to previous CBGRequestTable CSS) */
+.requests-section {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.requests-table th, .requests-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.requests-table th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.badge-pending { background-color: #ff9800; }
+.badge-accepted { background-color: #4caf50; }
+.badge-completed { background-color: #2196f3; }
+
+/* SlotsCapacity.css can reuse stats-cards styles */
+
+/* Daily Price Section */
+.daily-price-section {
+  background-color: #f0f8ff;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.daily-price-section input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+  width: 200px;
+}
+
+.daily-price-section button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.daily-price-section button:hover {
+  background-color: #218838;
+}
+
+.price-message {
+  color: #155724;
+  font-weight: 500;
+}
+
+
+
+
+
+/* Base button */
+.action-btn {
+  padding: 10px 20px;           /* 🔥 Bigger size */
+  margin: 6px;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;             /* 🔥 Bigger text */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  min-width: 100px;            /* 🔥 Prevent tiny buttons */
+}
+
+/* ACCEPT */
+.accept-btn {
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  box-shadow: 0 5px 12px rgba(76, 175, 80, 0.35);
+}
+
+.accept-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* REJECT */
+.reject-btn {
+  background: linear-gradient(135deg, #ff4d4d, #c62828);
+  color: white;
+  box-shadow: 0 5px 12px rgba(255, 77, 77, 0.35);
+}
+
+.reject-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* COMPLETE */
+.complete-btn {
+  background: linear-gradient(135deg, #2196F3, #1565c0);
+  color: white;
+  box-shadow: 0 5px 12px rgba(33, 150, 243, 0.35);
+}
+
+.complete-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}
