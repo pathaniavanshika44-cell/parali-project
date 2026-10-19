@@ -1,0 +1,50 @@
+.cbg-profile-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #f5f7fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cbg-profile-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cbg-profile-container form label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 600;
+}
+
+.cbg-profile-container form input,
+.cbg-profile-container form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.cbg-profile-container form button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cbg-profile-container form button:hover {
+  background: #45a049;
+}
+
+.cbg-profile-container .message {
+  margin-top: 10px;
+  text-align: center;
+  color: green;
+}

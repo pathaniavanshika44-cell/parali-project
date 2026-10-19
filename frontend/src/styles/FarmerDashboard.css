@@ -1,0 +1,195 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Segoe UI",sans-serif;
+}
+
+/* PAGE */
+
+.dashboard-container{
+display:flex;
+min-height:100vh;
+background:#eef2ef;
+}
+
+
+/* SIDEBAR */
+
+.sidebar{
+width:240px;
+background:#1f3a2f;
+color:white;
+padding:30px 20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-size:22px;
+font-weight:600;
+margin-bottom:30px;
+}
+
+.logo p{
+font-size:12px;
+color:#c9d5cf;
+}
+
+.menu{
+list-style:none;
+}
+
+.menu li{
+padding:12px;
+margin-bottom:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.menu li:hover{
+background:#2d4f40;
+}
+
+.menu .active{
+background:#3d6f56;
+}
+
+
+/* HELP */
+
+.help-box{
+background:#2b4c3e;
+padding:15px;
+border-radius:10px;
+text-align:center;
+}
+
+.help-box button{
+margin-top:10px;
+padding:8px 14px;
+border:none;
+background:#4CAF50;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+
+/* MAIN AREA */
+
+.main{
+flex:1;
+padding:40px;
+}
+
+
+/* HEADER */
+
+.topbar h2{
+font-size:28px;
+color:#1e2b25;
+margin-bottom:5px;
+}
+
+.topbar p{
+color:#5f6d66;
+margin-bottom:30px;
+}
+
+
+/* BANNER */
+
+.request-banner{
+background:
+linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),
+url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854");
+background-size:cover;
+background-position:center;
+color:white;
+padding:50px;
+border-radius:16px;
+margin-bottom:40px;
+}
+
+.request-banner h2{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.green-btn{
+margin-top:15px;
+padding:12px 22px;
+border:none;
+background:#3ea055;
+color:white;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+}
+
+
+/* REQUEST SECTION */
+
+.recent-section h3{
+font-size:24px;
+margin-bottom:20px;
+color:#1f2d27;
+}
+
+
+/* REQUEST LIST */
+
+.recent-grid{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+
+/* REQUEST CARD */
+
+.recent-card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.recent-card h4{
+font-size:18px;
+color:#1d2b25;
+}
+
+.recent-card p{
+color:#666;
+}
+
+
+/* STATUS */
+
+.status{
+padding:6px 12px;
+border-radius:20px;
+font-size:13px;
+font-weight:500;
+}
+
+.pending .status{
+background:#fff4d6;
+color:#b7791f;
+}
+
+.accepted .status{
+background:#d8f5e1;
+color:#207245;
+}
+
+.done .status{
+background:#e2ecff;
+color:#365ecf;
+}
