@@ -3,7 +3,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, String, func
+from sqlalchemy import Boolean, DateTime, Index, String, Text, func
 from sqlalchemy.dialects.postgresql import ENUM, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -21,7 +21,13 @@ class User(Base):
     """Represents an authenticated user of the platform."""
 
     __tablename__ = "users"
-
+    __table_args__ = (
+        Index(
+            "users_email_lower_key",
+            func.lower("email"),
+            unique=True,
+        ),
+    )
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         primary_key=True,
@@ -34,7 +40,15 @@ class User(Base):
         unique=True,
         nullable=False,
     )
+    email: Mapped[str | None] = mapped_column(
+        String(254),
+        nullable=True,
+    )
 
+    password_hash: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
     full_name: Mapped[str] = mapped_column(
         String(120),
         nullable=False,
