@@ -11,6 +11,26 @@ jobs:
       run:
         working-directory: apps/api
 
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_USER: parali_app
+          POSTGRES_PASSWORD: ci_only_password
+          POSTGRES_DB: parali_marketplace
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U parali_app -d parali_marketplace"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://parali_app:ci_only_password@localhost:5432/parali_marketplace
+      JWT_SECRET_KEY: ci-only-dummy-secret-key-not-for-real-use-0123456789
+      PGPASSWORD: ci_only_password
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,6 +42,12 @@ jobs:
 
       - name: Install dependencies
         run: python -m pip install -e ".[dev]"
+
+      - name: Apply database schema
+        run: >-
+          psql -h localhost -U parali_app -d parali_marketplace
+          -v ON_ERROR_STOP=1 --single-transaction
+          -f ../../infra/postgres/init/001_schema.sql
 
       - name: Run Ruff
         run: python -m ruff check .
