@@ -13,6 +13,7 @@ The project is in the setup and planning phase.
 - PostgreSQL and PostGIS database schema created and tested against a fresh database.
 - Redis configured through Docker Compose.
 - Nine CBG plant records imported from the supplied plant register.
+- FastAPI backend foundation with health endpoints, async database access, Alembic baseline, and CI against PostGIS.
 - Plant verification, pricing, authentication, booking workflows, and application services remain to be implemented and tested.
 
 ## Planned Features
@@ -40,7 +41,7 @@ These technologies describe the intended architecture; not all components are im
 
 ## Repository Structure
 
-- `apps/api/` — planned FastAPI backend.
+- `apps/api/` — FastAPI backend (foundation implemented).
 - `apps/web/` — planned Next.js application.
 - `apps/worker/` — planned background jobs.
 - `backend/` — existing backend files, not yet migrated.
@@ -103,6 +104,87 @@ The supplied register contains nine plant records. Seeded records are not necess
     docker compose exec redis redis-cli ping
 
 Expected output: `PONG`.
+
+## Backend Setup (apps/api)
+
+The API needs a PostgreSQL 17 database with PostGIS. Use either the Docker steps above or the local Homebrew route below.
+
+### Option B: local Homebrew PostgreSQL (macOS)
+
+Homebrew PostgreSQL has no `postgres` OS user. The superuser is your macOS username, so run the admin commands below as yourself, without `sudo -u postgres`.
+
+```bash
+brew install postgresql@17 postgis
+brew services start postgresql@17
+
+psql -d postgres -c "CREATE ROLE parali_app LOGIN PASSWORD 'choose_a_local_password';"
+psql -d postgres -c "CREATE DATABASE parali_marketplace OWNER parali_app;"
+psql -d parali_marketplace -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+psql -d parali_marketplace -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+psql -d parali_marketplace -c "GRANT ALL ON SCHEMA public TO parali_app;"
+```
+
+Apply the schema (stops at the first error and rolls everything back). Run this from the repository root:
+
+```bash
+psql -U parali_app -d parali_marketplace -v ON_ERROR_STOP=1 --single-transaction \
+  -f infra/postgres/init/001_schema.sql
+```
+
+Optionally load the plant seed data (run once only):
+
+```bash
+psql -U parali_app -d parali_marketplace -v ON_ERROR_STOP=1 -f infra/postgres/seed/001_cbgs.sql
+```
+
+### Python environment and settings
+
+From the repository root:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+cd apps/api
+python -m pip install -e ".[dev]"
+```
+
+In the root `.env`, set `DATABASE_URL` (format: `postgresql+asyncpg://parali_app:<password>@localhost:5432/parali_marketplace`) and `JWT_SECRET_KEY`. Generate the secret without printing it:
+
+```bash
+printf 'JWT_SECRET_KEY=%s\n' "$(python -c 'import secrets; print(secrets.token_urlsafe(64))')" >> ../../.env
+```
+
+Outside development, the app refuses to start if `JWT_SECRET_KEY` is shorter than 32 characters. Never commit `.env` or paste its contents anywhere.
+
+### Database migrations (Alembic)
+
+`001_schema.sql` is the baseline. Alembic revision `bc00f7130ca4` is an empty baseline that matches it, so all later schema changes go through Alembic.
+
+```bash
+cd apps/api
+alembic upgrade head
+alembic current
+alembic revision -m "describe the change"
+```
+
+Do not generate tables from the ORM models. They do not cover everything in the SQL schema (PostGIS indexes, check constraints, enums).
+
+### Run checks and start the server
+
+```bash
+cd apps/api
+pytest -q && ruff check . && mypy . && pip check
+uvicorn app.main:app --port 8000
+```
+
+Then verify:
+
+```bash
+curl -i http://127.0.0.1:8000/health
+curl -i http://127.0.0.1:8000/health/ready
+```
+
+`/health/ready` returns 503 if the database is unreachable or empty. GitHub Actions runs the same checks against a PostGIS service container.
 
 ## Business Rules
 
