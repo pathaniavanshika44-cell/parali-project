@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import "../../styles/farmer.css";
 
-function CBGProfile() {
+function CBGProfile({ userId }) { // pass current CBG user id as prop
 
   const [formData, setFormData] = useState({
     name_of_the_plant: "",
@@ -12,11 +12,40 @@ function CBGProfile() {
     longitude: "",
     latitude: "",
     feedstock_capacity: "",
-    plant_id: "",
     district: ""
   });
 
   const [message, setMessage] = useState("");
+  const [recordId, setRecordId] = useState(null); // for updates
+
+  useEffect(() => {
+    // Fetch CBG details if already present
+    const fetchCBGDetails = async () => {
+      const { data, error } = await supabase
+        .from("cbg_details")
+        .select("*")
+        .eq("user_id", userId)
+        .single(); // fetch single record
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Fetch error:", error);
+      } else if (data) {
+        setFormData({
+          name_of_the_plant: data.name_of_the_plant || "",
+          name_of_the_entity: data.name_of_the_entity || "",
+          address: data.address || "",
+          state: data.state || "",
+          longitude: data.longitude || "",
+          latitude: data.latitude || "",
+          feedstock_capacity: data.feedstock_capacity || "",
+          district: data.district || ""
+        });
+        setRecordId(data.id);
+      }
+    };
+
+    fetchCBGDetails();
+  }, [userId]);
 
   const handleChange = (e) => {
     setFormData({
@@ -27,102 +56,96 @@ function CBGProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
 
-    // Insert data into Supabase
-    const { data, error } = await supabase
-      .from("cbg_plants")
-      .insert([formData]);
+    if (recordId) {
+      // Update existing record
+      const { error } = await supabase
+        .from("cbg_details")
+        .update(formData)
+        .eq("id", recordId);
 
-    if (error) {
-      setMessage(`Error: ${error.message}`);
+      if (error) setMessage(`Error: ${error.message}`);
+      else setMessage("CBG Plant updated successfully ✅");
     } else {
-      setMessage("CBG Plant added successfully ✅");
-      setFormData({
-        name_of_the_plant: "",
-        name_of_the_entity: "",
-        address: "",
-        state: "",
-        longitude: "",
-        latitude: "",
-        feedstock_capacity: "",
-        plant_id: "",
-        district: ""
-      });
+      // Insert new record
+      const { data, error } = await supabase
+        .from("cbg_details")
+        .insert([{ ...formData, user_id: userId }]);
+
+      if (error) setMessage(`Error: ${error.message}`);
+      else {
+        setMessage("CBG Plant added successfully ✅");
+        setRecordId(data[0].id);
+      }
     }
   };
 
   return (
     <div className="farmer-card">
 
-      <h2>🏭 Add CBG Plant Details</h2>
+      <h2>🏭 CBG Plant Profile</h2>
 
       <form className="farmer-form" onSubmit={handleSubmit}>
 
-        <input
-          name="name_of_the_plant"
-          placeholder="Name of the Plant"
-          value={formData.name_of_the_plant}
-          onChange={handleChange}
+        <input 
+          name="name_of_the_plant" 
+          placeholder="Name of the Plant" 
+          value={formData.name_of_the_plant} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="name_of_the_entity"
-          placeholder="Name of the Entity"
-          value={formData.name_of_the_entity}
-          onChange={handleChange}
+        <input 
+          name="name_of_the_entity" 
+          placeholder="Name of the Entity" 
+          value={formData.name_of_the_entity} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
+        <input 
+          name="address" 
+          placeholder="Address" 
+          value={formData.address} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="state"
-          placeholder="State"
-          value={formData.state}
-          onChange={handleChange}
+        <input 
+          name="state" 
+          placeholder="State" 
+          value={formData.state} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="longitude"
-          placeholder="Longitude"
-          value={formData.longitude}
-          onChange={handleChange}
+        <input 
+          name="longitude" 
+          placeholder="Longitude" 
+          value={formData.longitude} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="latitude"
-          placeholder="Latitude"
-          value={formData.latitude}
-          onChange={handleChange}
+        <input 
+          name="latitude" 
+          placeholder="Latitude" 
+          value={formData.latitude} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="feedstock_capacity"
-          placeholder="Feedstock Capacity (Tons/day)"
-          value={formData.feedstock_capacity}
-          onChange={handleChange}
+        <input 
+          name="feedstock_capacity" 
+          placeholder="Feedstock Capacity (Tons/day)" 
+          value={formData.feedstock_capacity} 
+          onChange={handleChange} 
         />
 
-        <input
-          name="plant_id"
-          placeholder="Plant ID"
-          value={formData.plant_id}
-          onChange={handleChange}
-        />
-
-        <input
-          name="district"
-          placeholder="District"
-          value={formData.district}
-          onChange={handleChange}
+        <input 
+          name="district" 
+          placeholder="District" 
+          value={formData.district} 
+          onChange={handleChange} 
         />
 
         <button className="green-btn" type="submit">
-          Add CBG Plant
+          {recordId ? "Update CBG Plant" : "Add CBG Plant"}
         </button>
 
       </form>

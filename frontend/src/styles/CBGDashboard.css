@@ -155,3 +155,54 @@
   color: #155724;
   font-weight: 500;
 }
+
+
+
+
+
+/* Base button */
+.action-btn {
+  padding: 10px 20px;           /* 🔥 Bigger size */
+  margin: 6px;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;             /* 🔥 Bigger text */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  min-width: 100px;            /* 🔥 Prevent tiny buttons */
+}
+
+/* ACCEPT */
+.accept-btn {
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  box-shadow: 0 5px 12px rgba(76, 175, 80, 0.35);
+}
+
+.accept-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* REJECT */
+.reject-btn {
+  background: linear-gradient(135deg, #ff4d4d, #c62828);
+  color: white;
+  box-shadow: 0 5px 12px rgba(255, 77, 77, 0.35);
+}
+
+.reject-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* COMPLETE */
+.complete-btn {
+  background: linear-gradient(135deg, #2196F3, #1565c0);
+  color: white;
+  box-shadow: 0 5px 12px rgba(33, 150, 243, 0.35);
+}
+
+.complete-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}

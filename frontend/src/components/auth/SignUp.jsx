@@ -1,58 +1,55 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/SignUp.css";
+import "../../styles/SignIn.css";
 
 export default function SignUp() {
-  const navigate = useNavigate();
-  const { signUp } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("farmer");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e) => {
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
+
+  const handleSignUp = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
     setSuccess("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+    try {
+      const { success: ok, error: signUpError } = await signUp(email, password, role);
 
-    setLoading(true);
-    const { success: signUpSuccess, error: signUpError } = await signUp(
-      email,
-      password,
-      role
-    );
-    setLoading(false);
+      if (!ok) {
+        setError(signUpError?.message || "Failed to sign up");
+        return;
+      }
 
-    if (signUpSuccess) {
-      setSuccess("Signup successful! You can now Sign In.");
-      // Optionally navigate after a short delay:
-      setTimeout(() => navigate("/signin"), 2000);
-    } else {
-      setError(signUpError?.message || "Error signing up");
+      setSuccess("Account created! Please check your email to confirm, then sign in.");
+      setTimeout(() => navigate("/signin"), 3000);
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="signup-bg">
-      <div className="signup-card">
-        <h2>Sign Up for Parali</h2>
+    <div className="signin-bg">
+      <div className="signin-card">
+        <h2>Sign Up</h2>
         <p className="subtext">
           Already have an account? <Link to="/signin">Sign In</Link>
         </p>
 
         {error && <p className="error">{error}</p>}
+        {success && <p style={{ color: "green", marginBottom: "1rem" }}>{success}</p>}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSignUp}>
           <label>Email</label>
           <input
             type="email"
@@ -65,30 +62,22 @@ export default function SignUp() {
           <label>Password</label>
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            minLength={6}
             required
           />
 
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-
-          <label>Select Role</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <label>Role</label>
+          <select value={role} onChange={(e) => setRole(e.target.value)} required>
             <option value="farmer">Farmer</option>
             <option value="cbg_user">CBG User</option>
             <option value="transport">Transport</option>
           </select>
 
           <button type="submit" disabled={loading}>
-            {loading ? "Signing Up..." : "Sign Up"}
+            {loading ? "Creating Account..." : "Sign Up"}
           </button>
         </form>
       </div>

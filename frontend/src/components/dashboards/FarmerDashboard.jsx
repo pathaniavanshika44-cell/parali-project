@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+// useState still used for requests state below
 import "../../styles/FarmerDashboard.css";
 
 import RequestToCBG from "../farmer/requestCBG";
@@ -6,8 +8,22 @@ import RequestStatus from "../farmer/requestStatus";
 import FarmerProfile from "../farmer/FarmerProfile";
 
 const FarmerDashboard = () => {
-  // Track which page is active
-  const [activePage, setActivePage] = useState("dashboard");
+  const { section } = useParams();
+  const navigate = useNavigate();
+  const activePage = section || "dashboard";
+
+  // const setActivePage = (page) => {
+  //   if (page === "dashboard") navigate("/dashboard");
+  //   else navigate(`/dashboard/${page}`);
+  // };
+
+
+
+  const setActivePage = (page) => {
+  if (page === "dashboard") navigate("/farmer/dashboard");
+  else navigate(`/farmer/dashboard/${page}`);
+};
+
 
   // Track request counts dynamically
   const [requests, setRequests] = useState({

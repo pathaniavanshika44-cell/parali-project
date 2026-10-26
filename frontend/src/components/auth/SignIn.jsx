@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/SignIn.css";
 
@@ -11,40 +10,73 @@ export default function SignIn() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { setRole } = useAuth();
+  const { signIn } = useAuth();
+
+  // const handleSignIn = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+
+  //   try {
+  //     const { success, role: userRole, error: loginError } = await signIn(email, password);
+
+  //     if (!success) {
+  //       setError(loginError?.message || "Failed to sign in");
+  //       return;
+  //     }
+
+  //     // Use role returned directly from signIn — avoids stale context state
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError("Something went wrong. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
+
+
 
   const handleSignIn = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  try {
+    const { success, role: userRole, error: loginError } = await signIn(email, password);
 
-    if (signInError) {
-      setError(signInError.message);
-      setLoading(false);
+    if (!success) {
+      setError(loginError?.message || "Failed to sign in");
       return;
     }
 
-    const { data: userData, error: roleError } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (roleError || !userData) {
-      setError("Failed to fetch user role.");
-      setLoading(false);
-      return;
+    // ✅ Role-based navigation (FIX)
+    if (userRole === "farmer") {
+      navigate("/farmer/dashboard");
+    } else if (userRole === "cbg_user") {
+      navigate("/cbg/dashboard");
+    } else if (userRole === "transport") {
+      navigate("/transport/dashboard");
+    } else {
+      navigate("/signin"); // fallback safety
     }
 
-    setRole(userData.role);
+  } catch (err) {
+    console.error(err);
+    setError("Something went wrong. Please try again.");
+  } finally {
     setLoading(false);
-    navigate("/dashboard"); // Redirect to dashboard
-  };
+  }
+};
+
+
+
+
+
 
   return (
     <div className="signin-bg">

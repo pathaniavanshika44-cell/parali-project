@@ -85,3 +85,19 @@
 .signin-card button:hover {
   background-color: #6aa156; /* lighter green on hover */
 }
+
+.signin-card select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+}
+
+.signin-card select:focus {
+  outline: none;
+  border-color: #3a6a35;
+  box-shadow: 0 0 5px rgba(58, 106, 53, 0.4);
+}
