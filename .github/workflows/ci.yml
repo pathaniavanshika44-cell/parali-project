@@ -49,6 +49,9 @@ jobs:
           -v ON_ERROR_STOP=1 --single-transaction
           -f ../../infra/postgres/init/001_schema.sql
 
+      - name: Run migrations
+        run: alembic upgrade head
+
       - name: Run Ruff
         run: python -m ruff check .
 
